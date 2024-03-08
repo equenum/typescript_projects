@@ -44,11 +44,12 @@ class Employee extends Person {
   }
 
   override getFullInfo(this: Employee) {
-    return `Department: ${
-      this.departmentName
-    }, Full name: ${super.getFullInfo()}`; // super - base class reference
+    return `Department: ${this.departmentName}, 
+    Full name: ${super.getFullInfo()}`; // super - base class reference
   }
 }
 
 const employee = new Employee('Sales', 'Tom', 'Scott');
 console.log(employee.getFullInfo());
+
+// getters / setters
