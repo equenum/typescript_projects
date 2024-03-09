@@ -53,3 +53,47 @@ const employee = new Employee('Sales', 'Tom', 'Scott');
 console.log(employee.getFullInfo());
 
 // getters / setters
+class Company {
+  private departments: string[];
+
+  get departmentNames(): string[] {
+    return this.departments;
+  }
+
+  set departmentNames(names: string[]) {
+    if (names.length === 0) {
+      throw new Error('Invalid argument');
+    }
+
+    this.departments.push(...names);
+  }
+
+  constructor(departments: string[]) {
+    this.departments = departments;
+  }
+}
+
+const company = new Company([]);
+company.departmentNames = ['Logistics'];
+
+console.log(company.departmentNames);
+// company.departmentNames = []; - throws error
+
+// static properties and methods
+Math.PI; // JS
+
+class DepartmentNames {
+  static readonly Logistics = 'LOGISTICS';
+  static readonly Sales = 'SALES';
+  static readonly Engineering = 'ENGINEERING';
+}
+
+console.log(DepartmentNames.Engineering);
+
+class ConsoleLogger {
+  static log(text: string) {
+    console.log(text);
+  }
+}
+
+ConsoleLogger.log('Log this!');
