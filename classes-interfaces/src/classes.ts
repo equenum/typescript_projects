@@ -1,20 +1,20 @@
 // classes
 class Person {
   // fields: public by default
-  readonly firstName: string; // firstName: string = 'DEFAULT'; - default value
-  readonly lastName: string;
+  readonly fName: string; // firstName: string = 'DEFAULT'; - default value
+  readonly lName: string;
 
   // protected modifier is also available
 
   constructor(firstName: string, lastName: string) {
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.fName = firstName;
+    this.lName = lastName;
   }
 
   // also public by default
   // this 'argument makes sure that this always refers to the object and to the caller'
   getFullInfo(this: Person) {
-    return `${this.firstName} ${this.lastName}`;
+    return `${this.fName} ${this.lName}`;
   }
 }
 
@@ -97,3 +97,40 @@ class ConsoleLogger {
 }
 
 ConsoleLogger.log('Log this!');
+
+// abstract classes
+abstract class Car {
+  abstract ride(): void;
+}
+
+class ElectricCar extends Car {
+  override ride(): void {
+    console.log('I am fast as f boiii!');
+  }
+}
+
+// private constructors - singletons
+class Singleton {
+  private static instance: Singleton;
+  private readonly singletonName: string;
+
+  private constructor(name: string) {
+    this.singletonName = name;
+  }
+
+  static getInstance() {
+    if (this.instance) {
+      return this.instance;
+    }
+
+    this.instance = new Singleton('SingletonName');
+    return this.instance;
+  }
+}
+
+const single1 = Singleton.getInstance();
+const single2 = Singleton.getInstance();
+
+if (single1 === single2) {
+  console.log('Same instance!');
+}
