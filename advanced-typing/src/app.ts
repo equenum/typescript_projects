@@ -63,15 +63,79 @@ var car = new Car();
 var truck = new Truck();
 
 function useVehicle(vehicle: Vehicle) {
-  if (vehicle instanceof Car) {
-    vehicle.ride();
-  }
+  vehicle.ride();
 
   if (vehicle instanceof Truck) {
-    vehicle.ride();
     vehicle.load(1000);
   }
 }
 
 useVehicle(car);
 useVehicle(truck);
+
+// discriminated unions: works with interfaces and classes
+interface Bird {
+  type: 'bird';
+  flyingSpeed: number;
+}
+
+interface Horse {
+  type: 'horse';
+  runningSpeed: number;
+}
+
+type Animal = Horse | Bird;
+
+function moveAnimal(animal: Animal) {
+  let speed: number;
+  switch (animal.type) {
+    case 'bird':
+      speed = animal.flyingSpeed;
+      break;
+    case 'horse':
+      speed = animal.runningSpeed;
+      break;
+  }
+
+  console.log(`Moving at speed: ${speed}`);
+}
+
+// type casting
+const paragraph1 = document.querySelector('p'); // inferred type: HTMLParagraphElement
+const paragraph2 = document.getElementById('paragraph') as HTMLParagraphElement; // inferred type: HTML element
+const paragraph3 = <HTMLParagraphElement>document.getElementById('paragraph');
+
+// index properties
+interface ErrorContainer {
+  [prop: string]: string; // index property that has a string name and string value
+  //id: string; // we can also add predefined properties, but only if they are of the same type as the index one(s)
+}
+
+const errorBag: ErrorContainer = {
+  email: 'Invalid email',
+  errorCode: 'INVEM101',
+};
+
+// function overloads
+
+//type Combinable = string | number;
+function add(a: string, b: string): string;
+function add(a: number, b: string): string;
+function add(a: string, b: number): string;
+function add(a: number, b: number): number;
+function add(a: Combinable, b: Combinable) {
+  if (typeof a === 'string' || typeof b === 'string') {
+    return a.toString() + b.toString();
+  }
+
+  return a + b;
+}
+
+const resultNumber = add(1, 2); // inferred type: number
+const resultString = add('1', '2'); // inferred type: string
+
+// optional chaining and nullish coalescing
+// console.log(user?.job?.title); ? - auto null check
+
+const userInput = null;
+const storedData = userInput ?? 'DEFAULT'; // ?? - null or undefined
