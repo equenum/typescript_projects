@@ -1,3 +1,17 @@
+// decorators
+function autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjustedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFunction = originalMethod.bind(this);
+      return boundFunction;
+    }
+  };
+
+  return adjustedDescriptor;
+}
+
 // classes
 
 class ProjectInput {
@@ -31,6 +45,7 @@ class ProjectInput {
   }
 
   // event handlers
+  @autobind
   private submitHandler(event: Event) {
     event.preventDefault();
 
@@ -42,7 +57,7 @@ class ProjectInput {
   }
 
   private configure() {
-    this.formElement.addEventListener('submit', this.submitHandler.bind(this));
+    this.formElement.addEventListener('submit', this.submitHandler);
   }
 
   private attachTemplate() {
