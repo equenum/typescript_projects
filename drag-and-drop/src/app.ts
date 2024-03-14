@@ -15,10 +15,48 @@ function autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
 
 // classes
 
+// global state management singleton
+class ProjectState {
+  private listeners: any[] = [];
+  private projects: any[] = [];
+  private static instance: ProjectState;
+
+  constructor() {}
+
+  static getInstance() {
+    if (this.instance) {
+      return this.instance;
+    }
+
+    this.instance = new ProjectState();
+    return this.instance;
+  }
+
+  public addProject(title: string, description: string, numberOfPeople: number) {
+    var project = {
+      id: Math.random().toString(),
+      title: title,
+      description: description,
+      people: numberOfPeople
+    };
+
+    this.projects.push(project);
+    for (const listener of this.listeners) {
+      listener(this.projects.slice()); // .slice() returns a copy of the array
+    }
+  }
+
+  public addListener(func: Function) {
+    this.listeners.push(func);
+  }
+}
+
+const globalProjectState = ProjectState.getInstance();
+
 class UserProjectInput {
-  private readonly title: string;
-  private readonly description: string;
-  private readonly people: number;
+  readonly title: string;
+  readonly description: string;
+  readonly people: number;
 
   constructor(title: string, description: string, people: number) {
     this.title = title;
@@ -34,6 +72,7 @@ class ProjectList {
   private readonly hostElementId = 'app';
 
   private readonly type: ProjectType;
+  private assignedProjects: any[] = [];
 
   private readonly templateElement: HTMLTemplateElement;
   private readonly hostElement: HTMLDivElement;
@@ -48,10 +87,25 @@ class ProjectList {
     const importedNode = document.importNode(this.templateElement.content, true);
     this.sectionElement = importedNode.firstElementChild as HTMLElement;
     this.sectionElement.id = `${this.type}-projects`;
-    this.sectionElement.className = 'projects';
 
-    this.renderContent();
+    globalProjectState.addListener((projects: any[]) => {
+      this.assignedProjects = projects;
+      this.renderProjects();
+    });
+
     this.attach();
+    this.renderContent();
+  }
+
+  private renderProjects() {
+    const listElement = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+    listElement.innerHTML = ''; // reset the list
+
+    for (const project of this.assignedProjects) {
+      const newListItem = document.createElement('li');
+      newListItem.textContent = project.description;
+      listElement.append(newListItem);
+    }
   }
 
   private renderContent() {
@@ -121,7 +175,7 @@ class ProjectInput {
     const userInput = this.getUserInput();
 
     if (userInput) {
-      console.log(userInput);
+      globalProjectState.addProject(userInput.title, userInput.description, userInput.people);
     }
 
     this.clearUserInput();
