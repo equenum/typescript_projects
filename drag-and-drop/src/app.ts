@@ -1,4 +1,5 @@
 // decorators
+
 function autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
   const adjustedDescriptor: PropertyDescriptor = {
@@ -13,6 +14,55 @@ function autobind(_1: any, _2: string, descriptor: PropertyDescriptor) {
 }
 
 // classes
+
+class UserProjectInput {
+  private readonly title: string;
+  private readonly description: string;
+  private readonly people: number;
+
+  constructor(title: string, description: string, people: number) {
+    this.title = title;
+    this.description = description;
+    this.people = people;
+  }
+}
+
+type ProjectType = 'active' | 'finished';
+
+class ProjectList {
+  private readonly templateElementId = 'project-list';
+  private readonly hostElementId = 'app';
+
+  private readonly type: ProjectType;
+
+  private readonly templateElement: HTMLTemplateElement;
+  private readonly hostElement: HTMLDivElement;
+  private readonly sectionElement: HTMLElement;
+
+  constructor(type: ProjectType) {
+    this.type = type;
+
+    this.templateElement = document.getElementById(this.templateElementId)! as HTMLTemplateElement;
+    this.hostElement = document.getElementById(this.hostElementId)! as HTMLDivElement;
+
+    const importedNode = document.importNode(this.templateElement.content, true);
+    this.sectionElement = importedNode.firstElementChild as HTMLElement;
+    this.sectionElement.id = `${this.type}-projects`;
+    this.sectionElement.className = 'projects';
+
+    this.renderContent();
+    this.attach();
+  }
+
+  private renderContent() {
+    this.sectionElement.querySelector('ul')!.id = `${this.type}-projects-list`;
+    this.sectionElement.querySelector('h2')!.textContent = `${this.type.toUpperCase()} PROJECTS`;
+  }
+
+  private attach() {
+    this.hostElement.insertAdjacentElement('beforeend', this.sectionElement);
+  }
+}
 
 class ProjectInput {
   private readonly templateElementId = 'project-input';
@@ -44,16 +94,47 @@ class ProjectInput {
     this.attachTemplate();
   }
 
-  // event handlers
+  private clearUserInput() {
+    const emptyValue = '';
+
+    this.titleInputElement.value = emptyValue;
+    this.descriptionInputElement.value = emptyValue;
+    this.peopleInputElement.value = emptyValue;
+  }
+
+  private getUserInput(): UserProjectInput | void {
+    const enteredTitle = this.titleInputElement.value;
+    const enteredDescription = this.descriptionInputElement.value;
+    const enteredPeople = this.peopleInputElement.value;
+
+    if (this.hasEmptyElements(enteredTitle, enteredDescription, enteredPeople)) {
+      alert('Invalid input parameters! Please, try again.');
+      return;
+    } else {
+      return new UserProjectInput(enteredTitle, enteredDescription, +enteredPeople);
+    }
+  }
+
   @autobind
   private submitHandler(event: Event) {
     event.preventDefault();
+    const userInput = this.getUserInput();
 
-    console.log(this.titleInputElement.value);
-    console.log(this.descriptionInputElement.value);
-    console.log(this.peopleInputElement.value);
+    if (userInput) {
+      console.log(userInput);
+    }
 
-    // handle here ...
+    this.clearUserInput();
+  }
+
+  private hasEmptyElements(...elements: string[]) {
+    for (let element of elements) {
+      if (element.trim().length === 0) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private configure() {
@@ -66,4 +147,6 @@ class ProjectInput {
 }
 
 // business logic
-var projectInput = new ProjectInput();
+const projectInput = new ProjectInput();
+const activeProjects = new ProjectList('active');
+const finishedProjects = new ProjectList('finished');
