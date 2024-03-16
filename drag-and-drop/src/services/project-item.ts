@@ -1,4 +1,6 @@
 /// <reference path="component.ts"/>
+/// <reference path="../models/project.ts"/>
+/// <reference path="../interfaces/draggable.ts"/>
 
 namespace DragDrop {
   export class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Draggable {

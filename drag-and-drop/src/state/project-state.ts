@@ -1,3 +1,5 @@
+/// <reference path="../models/project.ts"/>
+
 namespace DragDrop {
   type Listener<T> = (items: T[]) => void;
 
@@ -48,6 +50,4 @@ namespace DragDrop {
       }
     }
   }
-
-  export const globalProjectState = ProjectState.getInstance();
 }

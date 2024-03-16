@@ -1,4 +1,5 @@
 /// <reference path="component.ts"/>
+/// <reference path="../models/user-project-input.ts"/>
 
 namespace DragDrop {
   export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {

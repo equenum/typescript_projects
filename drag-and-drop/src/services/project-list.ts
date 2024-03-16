@@ -1,3 +1,8 @@
+/// <reference path="component.ts"/>
+/// <reference path="project-item.ts"/>
+/// <reference path="../models/project.ts"/>
+/// <reference path="../interfaces/drag-target.ts"/>
+
 namespace DragDrop {
   type ProjectType = 'active' | 'finished';
 
