@@ -1,12 +1,10 @@
-// references: this approach only provides reference clues to TS, does not actually bundle JS files
-/// <reference path="services/project-input.ts"/>
-/// <reference path="services/project-list.ts"/>
-/// <reference path="state/project-state.ts"/>
+import { ProjectInput } from './services/project-input.js';
+import { ProjectList } from './services/project-list.js';
+import { ProjectState } from './state/project-state.js';
 
-namespace DragDrop {
-  export const globalProjectState = ProjectState.getInstance();
-  // business logic
-  const projectInput = new ProjectInput();
-  const activePrjList = new ProjectList('active');
-  const finishedPrjList = new ProjectList('finished');
-}
+export const globalProjectState = ProjectState.getInstance();
+
+// business logic
+const projectInput = new ProjectInput();
+const activePrjList = new ProjectList('active');
+const finishedPrjList = new ProjectList('finished');

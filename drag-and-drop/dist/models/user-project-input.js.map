@@ -1,0 +1,1 @@
+{"version":3,"file":"user-project-input.js","sourceRoot":"","sources":["../../src/models/user-project-input.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,gBAAgB;IAK3B,YAAY,KAAa,EAAE,WAAmB,EAAE,MAAc;QAC5D,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,WAAW,GAAG,WAAW,CAAC;QAC/B,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACvB,CAAC;CACF"}
