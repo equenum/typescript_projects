@@ -38,7 +38,7 @@ class Project {
   public readonly title: string;
   public readonly description: string;
   public readonly people: number;
-  public readonly status: ProjectStatus;
+  public status: ProjectStatus;
 
   constructor(id: string, title: string, description: string, people: number, status: ProjectStatus) {
     this.id = id;
@@ -82,6 +82,19 @@ class ProjectState extends State<Project> {
     var project = new Project(Math.random().toString(), title, description, numberOfPeople, ProjectStatus.Active);
 
     this.projects.push(project);
+    this.notify();
+  }
+
+  switchStatus(projectId: string, newStatus: ProjectStatus) {
+    const project = this.projects.find((prj) => prj.id === projectId);
+
+    if (project && project.status !== newStatus) {
+      project.status = newStatus;
+      this.notify();
+    }
+  }
+
+  private notify() {
     for (const listener of this.listeners) {
       listener(this.projects.slice()); // .slice() returns a copy of the array
     }
@@ -173,11 +186,9 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
 }
 
 class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget {
-  private readonly templateElementId = 'project-list';
-  private readonly hostElementId = 'app';
-
   private readonly type: ProjectType;
   private assignedProjects: Project[] = [];
+
   constructor(type: ProjectType) {
     super('project-list', 'app', false, `${type}-projects`);
     this.type = type;
@@ -188,7 +199,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
 
   @autobind
   dragOverHandler(event: DragEvent) {
-    if (event.dataTransfer && event.dataTransfer.types[0] == 'text/plain') {
+    if (event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
       event.preventDefault(); // default is not allow dropping
       const listEl = this.element.querySelector('ul')!;
       listEl.classList.add('droppable');
@@ -196,11 +207,9 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
   }
 
   @autobind
-  dropHandler(event: DragEvent): void {
-    const listEl = this.element.querySelector('ul')!;
-    listEl.classList.remove('droppable');
-
-    console.log('Adding new droppable');
+  dropHandler(event: DragEvent) {
+    const prjId = event.dataTransfer!.getData('text/plain');
+    globalProjectState.switchStatus(prjId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Finished);
   }
 
   @autobind
@@ -216,9 +225,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
 
     globalProjectState.addListener((projects: Project[]) => {
       const activeProjects = projects.filter((project) => {
-        if (this.type == 'active') {
+        if (this.type === 'active') {
           return project.status === ProjectStatus.Active;
         }
+        return project.status === ProjectStatus.Finished;
       });
 
       this.assignedProjects = activeProjects;
@@ -226,18 +236,19 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
     });
   }
 
-  renderProjects() {
-    const listElement = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
-    listElement.innerHTML = ''; // reset the list
-
-    for (const project of this.assignedProjects) {
-      new ProjectItem(this.element.querySelector('ul')!.id, project);
-    }
+  renderContent() {
+    const listId = `${this.type}-projects-list`;
+    this.element.querySelector('ul')!.id = listId;
+    this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + ' PROJECTS';
   }
 
-  renderContent() {
-    this.element.querySelector('ul')!.id = `${this.type}-projects-list`;
-    this.element.querySelector('h2')!.textContent = `${this.type.toUpperCase()} PROJECTS`;
+  private renderProjects() {
+    const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement;
+    listEl.innerHTML = '';
+
+    for (const prjItem of this.assignedProjects) {
+      new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
+    }
   }
 }
 
@@ -310,5 +321,5 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
 
 // business logic
 const projectInput = new ProjectInput();
-const activeProjects = new ProjectList('active');
-const finishedProjects = new ProjectList('finished');
+const activePrjList = new ProjectList('active');
+const finishedPrjList = new ProjectList('finished');
