@@ -1,9 +1,9 @@
-import { globalProjectState } from '../app.js';
-import { autobind } from '../decorators/autobind.js';
-import { DragTarget } from '../interfaces/drag-target.js';
-import { Project, ProjectStatus } from '../models/project.js';
-import { Component } from './component.js';
-import { ProjectItem } from './project-item.js';
+import { globalProjectState } from '../app';
+import { autobind } from '../decorators/autobind';
+import { DragTarget } from '../interfaces/drag-target';
+import { Project, ProjectStatus } from '../models/project';
+import { Component } from './component';
+import { ProjectItem } from './project-item';
 
 type ProjectType = 'active' | 'finished';
 

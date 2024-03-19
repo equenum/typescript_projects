@@ -1,7 +1,7 @@
 // aliases
-import * as Proj from './services/project-input.js';
-import { ProjectList as ProjList } from './services/project-list.js';
-import { ProjectState } from './state/project-state.js';
+import * as Proj from './services/project-input';
+import { ProjectList as ProjList } from './services/project-list';
+import { ProjectState } from './state/project-state';
 
 export const globalProjectState = ProjectState.getInstance();
 
