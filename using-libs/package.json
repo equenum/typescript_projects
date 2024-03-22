@@ -1,0 +1,21 @@
+{
+  "name": "typescript_simple_project_template",
+  "version": "1.0.0",
+  "description": "A simple TypeScript project template for using with the [`Project Templates`](https://github.com/cantonios/vscode-project-templates) VSCode extension.",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server",
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.3",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  }
+}
